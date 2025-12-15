@@ -191,7 +191,7 @@ public class HuaShengProtocolDecoder extends BaseProtocolDecoder {
         position.set(Position.KEY_IGNITION, BitUtil.check(status, 14));
 
         int event = buf.readUnsignedShort();
-        position.set(Position.KEY_ALARM, decodeAlarm(event));
+        position.addAlarm(decodeAlarm(event));
         position.set(Position.KEY_EVENT, event);
 
         String time = buf.readCharSequence(12, StandardCharsets.US_ASCII).toString();
@@ -235,7 +235,7 @@ public class HuaShengProtocolDecoder extends BaseProtocolDecoder {
                     position.set(Position.KEY_FUEL_CONSUMPTION, buf.readUnsignedShort() * 0.01);
                     position.set(Position.KEY_ODOMETER_TRIP, buf.readUnsignedShort());
                     position.set(Position.KEY_POWER, buf.readUnsignedShort() * 0.01);
-                    position.set(Position.KEY_FUEL_LEVEL, buf.readUnsignedByte() * 0.4);
+                    position.set(Position.KEY_FUEL, buf.readUnsignedByte() * 0.4);
                     buf.readUnsignedInt(); // trip id
                     if (buf.readerIndex() < endIndex) {
                         position.set("adBlueLevel", buf.readUnsignedByte() * 0.4);

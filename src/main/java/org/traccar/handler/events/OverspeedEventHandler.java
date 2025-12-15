@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 - 2024 Anton Tananaev (anton@traccar.org)
+ * Copyright 2016 - 2025 Anton Tananaev (anton@traccar.org)
  * Copyright 2018 Andrey Kunitsyn (andrey@traccar.org)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,14 +56,14 @@ public class OverspeedEventHandler extends BaseEventHandler {
     }
 
     @Override
-    public void analyzePosition(Position position, Callback callback) {
+    public void onPosition(Position position, Callback callback) {
 
         long deviceId = position.getDeviceId();
         Device device = cacheManager.getObject(Device.class, position.getDeviceId());
         if (device == null) {
             return;
         }
-        if (!PositionUtil.isLatest(cacheManager, position) || !position.getValid()) {
+        if (!PositionUtil.isLatest(cacheManager, position)) {
             return;
         }
 

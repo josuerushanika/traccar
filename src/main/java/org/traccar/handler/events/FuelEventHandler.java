@@ -34,7 +34,7 @@ public class FuelEventHandler extends BaseEventHandler {
     }
 
     @Override
-    public void analyzePosition(Position position, Callback callback) {
+    public void onPosition(Position position, Callback callback) {
 
         Device device = cacheManager.getObject(Device.class, position.getDeviceId());
         if (device == null) {
@@ -44,24 +44,30 @@ public class FuelEventHandler extends BaseEventHandler {
             return;
         }
 
-        if (position.hasAttribute(Position.KEY_FUEL_LEVEL)) {
+        if (position.hasAttribute(Position.KEY_FUEL)) {
             Position lastPosition = cacheManager.getPosition(position.getDeviceId());
-            if (lastPosition != null && lastPosition.hasAttribute(Position.KEY_FUEL_LEVEL)) {
-                double before = lastPosition.getDouble(Position.KEY_FUEL_LEVEL);
-                double after = position.getDouble(Position.KEY_FUEL_LEVEL);
+            if (lastPosition != null && lastPosition.hasAttribute(Position.KEY_FUEL)) {
+                double before = lastPosition.getDouble(Position.KEY_FUEL);
+                double after = position.getDouble(Position.KEY_FUEL);
                 double change = after - before;
 
                 if (change > 0) {
                     double threshold = AttributeUtil.lookup(
                             cacheManager, Keys.EVENT_FUEL_INCREASE_THRESHOLD, position.getDeviceId());
                     if (threshold > 0 && change >= threshold) {
-                        callback.eventDetected(new Event(Event.TYPE_DEVICE_FUEL_INCREASE, position));
+                        Event event = new Event(Event.TYPE_DEVICE_FUEL_INCREASE, position);
+                        event.set("before", before);
+                        event.set("after", after);
+                        callback.eventDetected(event);
                     }
                 } else if (change < 0) {
                     double threshold = AttributeUtil.lookup(
                             cacheManager, Keys.EVENT_FUEL_DROP_THRESHOLD, position.getDeviceId());
                     if (threshold > 0 && Math.abs(change) >= threshold) {
-                        callback.eventDetected(new Event(Event.TYPE_DEVICE_FUEL_DROP, position));
+                        Event event = new Event(Event.TYPE_DEVICE_FUEL_DROP, position);
+                        event.set("before", before);
+                        event.set("after", after);
+                        callback.eventDetected(event);
                     }
                 }
             }

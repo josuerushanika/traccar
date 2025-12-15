@@ -137,7 +137,7 @@ public class EelinkProtocolDecoder extends BaseProtocolDecoder {
 
         } else if (type == MSG_ALARM) {
 
-            position.set(Position.KEY_ALARM, decodeAlarm(buf.readUnsignedByte()));
+            position.addAlarm(decodeAlarm(buf.readUnsignedByte()));
 
         } else if (type == MSG_STATE) {
 
@@ -244,7 +244,7 @@ public class EelinkProtocolDecoder extends BaseProtocolDecoder {
 
         if (type == MSG_WARNING) {
 
-            position.set(Position.KEY_ALARM, decodeAlarm(buf.readUnsignedByte()));
+            position.addAlarm(decodeAlarm(buf.readUnsignedByte()));
 
         } else if (type == MSG_REPORT) {
 
@@ -301,7 +301,7 @@ public class EelinkProtocolDecoder extends BaseProtocolDecoder {
 
             if (buf.readableBytes() >= 12) {
                 position.set(Position.PREFIX_TEMP + 1, buf.readShort() / 256.0);
-                position.set("humidity", buf.readUnsignedShort() * 0.1);
+                position.set(Position.KEY_HUMIDITY, buf.readUnsignedShort() * 0.1);
                 position.set("illuminance", buf.readUnsignedInt() / 256.0);
                 position.set("co2", buf.readUnsignedInt());
             }
@@ -395,7 +395,7 @@ public class EelinkProtocolDecoder extends BaseProtocolDecoder {
             switch (pid) {
                 case 0x89 -> position.set(Position.KEY_FUEL_CONSUMPTION, value);
                 case 0x8a -> position.set(Position.KEY_ODOMETER, value * 1000L);
-                case 0x8b -> position.set(Position.KEY_FUEL_LEVEL, value / 10);
+                case 0x8b -> position.set(Position.KEY_FUEL, value / 10);
             }
         }
 

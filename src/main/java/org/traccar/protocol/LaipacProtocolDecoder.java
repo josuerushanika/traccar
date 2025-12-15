@@ -103,16 +103,16 @@ public class LaipacProtocolDecoder extends BaseProtocolDecoder {
             char inputStatus = event.charAt(0);
             if (inputStatus >= 'A' && inputStatus <= 'D') {
                 int inputStatusInt = inputStatus - 'A';
-                position.set(Position.PREFIX_IN + 1, (boolean) BitUtil.check(inputStatusInt, 0));
-                position.set(Position.PREFIX_IN + 2, (boolean) BitUtil.check(inputStatusInt, 1));
+                position.set(Position.PREFIX_IN + 1, BitUtil.check(inputStatusInt, 0));
+                position.set(Position.PREFIX_IN + 2, BitUtil.check(inputStatusInt, 1));
                 if ("SF-Lite".equals(model)) {
                     position.set(Position.PREFIX_IN + 3, false);
                 }
                 return null;
             } else if (inputStatus >= 'O' && inputStatus <= 'R') {
                 int inputStatusInt = inputStatus - 'O';
-                position.set(Position.PREFIX_IN + 1, (boolean) BitUtil.check(inputStatusInt, 0));
-                position.set(Position.PREFIX_IN + 2, (boolean) BitUtil.check(inputStatusInt, 1));
+                position.set(Position.PREFIX_IN + 1, BitUtil.check(inputStatusInt, 0));
+                position.set(Position.PREFIX_IN + 2, BitUtil.check(inputStatusInt, 1));
                 if ("SF-Lite".equals(model)) {
                     position.set(Position.PREFIX_IN + 3, true);
                 }
@@ -218,7 +218,7 @@ public class LaipacProtocolDecoder extends BaseProtocolDecoder {
         position.setTime(dateBuilder.getDate());
 
         String event = parser.next();
-        position.set(Position.KEY_ALARM, decodeAlarm(event));
+        position.addAlarm(decodeAlarm(event));
         position.set(Position.KEY_EVENT, decodeEvent(event, position, model));
         position.set(Position.KEY_BATTERY, Double.parseDouble(parser.next().replaceAll("\\.", "")) * 0.001);
         position.set(Position.KEY_ODOMETER, parser.nextDouble() * 1000);

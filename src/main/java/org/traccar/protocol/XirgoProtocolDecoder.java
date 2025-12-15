@@ -119,19 +119,19 @@ public class XirgoProtocolDecoder extends BaseProtocolDecoder {
             case 4001, 4003, 6011, 6013 -> position.set(Position.KEY_IGNITION, true);
             case 4002, 4004, 6012, 6014 -> position.set(Position.KEY_IGNITION, false);
             case 4005 -> position.set(Position.KEY_CHARGE, false);
-            case 6002 -> position.set(Position.KEY_ALARM, Position.ALARM_OVERSPEED);
-            case 6006 -> position.set(Position.KEY_ALARM, Position.ALARM_ACCELERATION);
-            case 6007 -> position.set(Position.KEY_ALARM, Position.ALARM_BRAKING);
-            case 6008 -> position.set(Position.KEY_ALARM, Position.ALARM_LOW_POWER);
-            case 6009 -> position.set(Position.KEY_ALARM, Position.ALARM_POWER_CUT);
-            case 6010 -> position.set(Position.KEY_ALARM, Position.ALARM_POWER_RESTORED);
-            case 6016 -> position.set(Position.KEY_ALARM, Position.ALARM_IDLE);
-            case 6017 -> position.set(Position.KEY_ALARM, Position.ALARM_TOW);
+            case 6002 -> position.addAlarm(Position.ALARM_OVERSPEED);
+            case 6006 -> position.addAlarm(Position.ALARM_ACCELERATION);
+            case 6007 -> position.addAlarm(Position.ALARM_BRAKING);
+            case 6008 -> position.addAlarm(Position.ALARM_LOW_POWER);
+            case 6009 -> position.addAlarm(Position.ALARM_POWER_CUT);
+            case 6010 -> position.addAlarm(Position.ALARM_POWER_RESTORED);
+            case 6016 -> position.addAlarm(Position.ALARM_IDLE);
+            case 6017 -> position.addAlarm(Position.ALARM_TOW);
             case 6030, 6071 -> position.set(Position.KEY_MOTION, true);
             case 6031 -> position.set(Position.KEY_MOTION, false);
-            case 6032 -> position.set(Position.KEY_ALARM, Position.ALARM_PARKING);
-            case 6090 -> position.set(Position.KEY_ALARM, Position.ALARM_REMOVING);
-            case 6091 -> position.set(Position.KEY_ALARM, Position.ALARM_LOW_BATTERY);
+            case 6032 -> position.addAlarm(Position.ALARM_PARKING);
+            case 6090 -> position.addAlarm(Position.ALARM_REMOVING);
+            case 6091 -> position.addAlarm(Position.ALARM_LOW_BATTERY);
         }
     }
 
@@ -291,7 +291,7 @@ public class XirgoProtocolDecoder extends BaseProtocolDecoder {
             position.set(Position.PREFIX_IN + 3, parser.nextInt());
             position.set(Position.PREFIX_OUT + 1, parser.nextInt());
             position.set(Position.PREFIX_ADC + 1, parser.nextDouble());
-            position.set(Position.KEY_FUEL_LEVEL, parser.nextDouble());
+            position.set(Position.KEY_FUEL, parser.nextDouble());
             position.set(Position.KEY_HOURS, UnitsConverter.msFromHours(parser.nextInt()));
             position.set("oilPressure", parser.nextInt());
             position.set("oilLevel", parser.nextInt());

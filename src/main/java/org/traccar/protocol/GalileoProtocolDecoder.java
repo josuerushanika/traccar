@@ -103,7 +103,7 @@ public class GalileoProtocolDecoder extends BaseProtocolDecoder {
         TAG_LENGTH_MAP.put(0x5b, 7); // variable length
         TAG_LENGTH_MAP.put(0x5c, 68);
         TAG_LENGTH_MAP.put(0xfd, 8);
-        TAG_LENGTH_MAP.put(0xfe, 8);
+        TAG_LENGTH_MAP.put(0xfe, 8); // TODO this is probably incorrect
     }
 
     private static int getTagLength(int tag) {
@@ -173,7 +173,7 @@ public class GalileoProtocolDecoder extends BaseProtocolDecoder {
             case 0x90 -> position.set(Position.KEY_DRIVER_UNIQUE_ID, String.valueOf(buf.readUnsignedIntLE()));
             case 0xc0 -> position.set("fuelTotal", buf.readUnsignedIntLE() * 0.5);
             case 0xc1 -> {
-                position.set(Position.KEY_FUEL_LEVEL, buf.readUnsignedByte() * 0.4);
+                position.set(Position.KEY_FUEL, buf.readUnsignedByte() * 0.4);
                 position.set(Position.PREFIX_TEMP + 1, buf.readUnsignedByte() - 40);
                 position.set(Position.KEY_RPM, buf.readUnsignedShortLE() * 0.125);
             }
@@ -227,7 +227,7 @@ public class GalileoProtocolDecoder extends BaseProtocolDecoder {
         position.setLongitude(360 * bits.readUnsigned(22) / 4194304.0 - 180);
         position.setLatitude(180 * bits.readUnsigned(21) / 2097152.0 - 90);
         if (bits.readUnsigned(1) > 0) {
-            position.set(Position.KEY_ALARM, Position.ALARM_GENERAL);
+            position.addAlarm(Position.ALARM_GENERAL);
         }
     }
 

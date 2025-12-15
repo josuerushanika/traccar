@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 - 2024 Anton Tananaev (anton@traccar.org)
+ * Copyright 2016 - 2025 Anton Tananaev (anton@traccar.org)
  * Copyright 2015 Amila Silva
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,7 @@ public class DistanceHandler extends BasePositionHandler {
     }
 
     @Override
-    public void handlePosition(Position position, Callback callback) {
+    public void onPosition(Position position, Callback callback) {
 
         double distance = 0.0;
         if (position.hasAttribute(Position.KEY_DISTANCE)) {
@@ -57,7 +57,7 @@ public class DistanceHandler extends BasePositionHandler {
             }
             if (filter && last.getLatitude() != 0 && last.getLongitude() != 0) {
                 boolean satisfiesMin = minError == 0 || distance > minError;
-                boolean satisfiesMax = maxError == 0 || distance < maxError || position.getValid();
+                boolean satisfiesMax = maxError == 0 || distance < maxError;
                 if (!satisfiesMin || !satisfiesMax) {
                     position.setValid(last.getValid());
                     position.setLatitude(last.getLatitude());

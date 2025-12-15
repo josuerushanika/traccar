@@ -90,6 +90,7 @@ public class StartekProtocolDecoder extends BaseProtocolDecoder {
             .number("(d+)?|")                    // instant fuel
             .number("(d+)[%L]").optional()       // fuel level
             .groupEnd("?")
+            .expression(",([^,]{20,})").optional() // driver id
             .number(",(d+)").optional()          // hours
             .groupEnd("?")
             .groupEnd("?")
@@ -157,7 +158,7 @@ public class StartekProtocolDecoder extends BaseProtocolDecoder {
         if (event == 53) {
             position.set(Position.KEY_DRIVER_UNIQUE_ID, eventData);
         } else {
-            position.set(Position.KEY_ALARM, decodeAlarm(event));
+            position.addAlarm(decodeAlarm(event));
         }
 
         position.setTime(parser.nextDateTime());
@@ -233,7 +234,11 @@ public class StartekProtocolDecoder extends BaseProtocolDecoder {
             if (parser.hasNext()) {
                 position.set(Position.KEY_FUEL_CONSUMPTION, parser.nextInt() * 0.1);
             }
-            position.set(Position.KEY_FUEL_LEVEL, parser.nextInt());
+            position.set(Position.KEY_FUEL, parser.nextInt());
+        }
+
+        if (parser.hasNext()) {
+            position.set(Position.KEY_DRIVER_UNIQUE_ID, parser.next());
         }
 
         if (parser.hasNext()) {
@@ -261,7 +266,7 @@ public class StartekProtocolDecoder extends BaseProtocolDecoder {
                     index += 1; // speed
                     position.set(Position.KEY_RPM, Double.parseDouble(values[index++]));
                     index += 1; // fuel consumption
-                    position.set(Position.KEY_FUEL_LEVEL, Double.parseDouble(values[index++]));
+                    position.set(Position.KEY_FUEL, Double.parseDouble(values[index++]));
                     index += 4; // axel weights
                     index += 1; // turbo pressure
                     position.set(Position.KEY_COOLANT_TEMP, Integer.parseInt(values[index++]));
